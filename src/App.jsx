@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import './App.css';
 import MovieList from './components/Movie/MovieList';
 
@@ -24,7 +24,7 @@ function App() {
   const [retry, setRetry] = useState(false);
   const retryTimeoutRef = useRef(null);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await fetch('https://swapi.dev/api/films');
@@ -43,7 +43,12 @@ function App() {
       }
     }
     setIsLoading(false);
-  };
+  },[])
+
+  useEffect(() => {
+    fetchMovies();
+  }, [fetchMovies]);
+
 
   const retryFetch = () => {
     setRetry(true);
@@ -55,7 +60,6 @@ function App() {
     clearTimeout(retryTimeoutRef.current);
     setError("Cancelled retry");
   };
-
 
   let content = <p>No movies found!</p>;
 
@@ -77,6 +81,7 @@ function App() {
         <button onClick={retryFetch}>Fetch Movies</button>
         {retry && error && movieList.length == 0 && <button onClick={cancelRetry}>Cancel Retry</button>}
       </section>
+
       <section>
         <h1>MovieList</h1>
         {content}
