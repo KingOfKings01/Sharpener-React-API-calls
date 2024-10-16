@@ -18,19 +18,22 @@ function App() {
   }
 ]
 
-const [movieList, setMovieList] = useState(dummyData);
+const [movieList, setMovieList] = useState([]);
+const [isLoading, setIsLoading] = useState(false);
 
   const fetchMovies = async () => {
     try{
-
+      setIsLoading(true)
       const response = await fetch('https://swapi.dev/api/films')
       
       const data = await response.json()
       
       setMovieList(data.results)
+      setIsLoading(false)
     } catch(err){
       console.error('Error fetching movies:', err)
-      // setMovieList(dummyData)
+      setMovieList([])
+      setIsLoading(false)
     }
   }
 
@@ -40,7 +43,7 @@ const [movieList, setMovieList] = useState(dummyData);
         <button onClick={fetchMovies}>Fetch Movies</button>
       </section>
       <section>
-      <MovieList  dummyData={movieList}/>
+      <MovieList  movieList={movieList} isLoading={isLoading}/>
       </section>
     </>
   )
