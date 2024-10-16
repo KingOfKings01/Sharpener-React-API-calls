@@ -28,12 +28,26 @@ function App() {
   const fetchMovies = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('https://swapi.dev/api/films');
+      const response = await fetch(import.meta.env.VITE_FIREBASE_PATH);
       if (!response.ok) {
         throw new Error("Something went wrong ....Retrying");
       }
       const data = await response.json();
-      setMovieList(data.results);
+
+      console.log(data);
+
+      const loadedMovie = []
+
+      for (const key in data){
+        loadedMovie.push({
+          id: key,
+          title: data[key].title,
+          release_date: data[key].release_date,
+          opening: data[key].opening,
+        });
+      }
+
+      setMovieList(loadedMovie);
       setError("");
     } catch (err) {
       console.error('Error fetching movies:', err);
@@ -64,7 +78,7 @@ function App() {
   let content = <p>No movies found!</p>;
 
   if (movieList.length > 0) {
-    content = <MovieList movieList={movieList} isLoading={isLoading} />;
+    content = <MovieList movieList={movieList} setMovieList={setMovieList} />;
   }
 
   if (isLoading) {
@@ -78,7 +92,7 @@ function App() {
   return (
     <>
       <section>
-        <AddForm />
+        <AddForm setMovieList={setMovieList}/>
       </section>
 
       <section>
