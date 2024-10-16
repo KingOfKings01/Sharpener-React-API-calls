@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import './App.css';
 import MovieList from './components/Movie/MovieList';
+import AddForm from './components/Movie/AddForm';
 
 function App() {
   const dummyData = [
@@ -49,7 +50,6 @@ function App() {
     fetchMovies();
   }, [fetchMovies]);
 
-
   const retryFetch = () => {
     setRetry(true);
     fetchMovies();
@@ -77,6 +77,10 @@ function App() {
 
   return (
     <>
+      <section>
+        <AddForm />
+      </section>
+
       <section>
         <button onClick={retryFetch}>Fetch Movies</button>
         {retry && error && movieList.length == 0 && <button onClick={cancelRetry}>Cancel Retry</button>}
